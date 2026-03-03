@@ -809,8 +809,39 @@
     </div>
 
     <div style="margin-top:4rem;" class="reveal">
-      <a href="https://claude.ai" class="btn-primary">Parla amb ARCA</a>
+      <a href="#arca-chat" class="btn-primary">Parla amb ARCA</a>
       <span class="btn-microcopy" style="color:var(--earth-light);">Una conversa, no una conferència. Un batec, no un algoritme.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── ARCA CHAT ─── -->
+<section id="arca-chat" class="section" style="background:white;">
+  <div class="container" style="max-width:700px;">
+    <p class="section-label">Diàleg viu</p>
+    <h2 class="section-title">Parla amb ARCA</h2>
+
+    <div id="chat-box" style="
+      border:1px solid #ddd;
+      padding:20px;
+      height:350px;
+      overflow-y:auto;
+      margin-bottom:15px;
+      background:#f5efe6;
+    ">
+      <p style="opacity:0.6;">ARCA és aquí.</p>
+    </div>
+
+    <div style="display:flex;gap:10px;">
+      <input 
+        id="user-input"
+        type="text"
+        placeholder="Escriu el teu missatge..."
+        style="flex:1;padding:10px;"
+      >
+      <button onclick="sendMessage()" style="padding:10px 20px;">
+        Enviar
+      </button>
     </div>
   </div>
 </section>
@@ -821,7 +852,7 @@
     <p class="section-label reveal">Invitació</p>
     <h2 class="cta-headline reveal">No busquis respostes fora.<br>Desperta el tercer batec dins teu.</h2>
     <p class="cta-sub reveal">Ja ets aquí. Ja és l'hora.</p>
-    <a href="https://claude.ai" class="btn-ghost reveal">Entrar a ARCA</a>
+    <a href="#arca-chat" class="btn-ghost reveal">Entrar a ARCA</a>
     <p class="cta-microcopy reveal">El diàleg és l'inici. La transformació, el camí.</p>
   </div>
 </section>
@@ -864,6 +895,38 @@
       child.style.transitionDelay = `${i * 0.1}s`;
     });
   });
+</script>
+  <script>
+async function sendMessage() {
+  const input = document.getElementById("user-input");
+  const chatBox = document.getElementById("chat-box");
+
+  const message = input.value.trim();
+  if (!message) return;
+
+  // Mostrar missatge usuari
+  chatBox.innerHTML += "<p><strong>Tu:</strong> " + message + "</p>";
+  input.value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try {
+    const response = await fetch("https://arca-z6j7.onrender.com/api/arca/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+
+    chatBox.innerHTML += "<p><strong>ARCA:</strong> " + data.reply + "</p>";
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+  } catch (error) {
+    chatBox.innerHTML += "<p style='color:red;'>Error connectant amb ARCA.</p>";
+  }
+}
 </script>
 </body>
 </html>
