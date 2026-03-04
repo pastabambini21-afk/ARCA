@@ -895,8 +895,7 @@
       child.style.transitionDelay = `${i * 0.1}s`;
     });
   });
-</script>
-  <script>
+<script>
 async function sendMessage() {
   const input = document.getElementById("user-input");
   const chatBox = document.getElementById("chat-box");
@@ -904,7 +903,8 @@ async function sendMessage() {
   const message = input.value.trim();
   if (!message) return;
 
-  // Mostrar missatge usuari
+  console.log("Usuari envia:", message); // <-- afegim log
+
   chatBox.innerHTML += "<p><strong>Tu:</strong> " + message + "</p>";
   input.value = "";
   chatBox.scrollTop = chatBox.scrollHeight;
@@ -912,18 +912,20 @@ async function sendMessage() {
   try {
     const response = await fetch("https://arca-z6j7.onrender.com/api/arca/chat", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message })
     });
 
+    console.log("Resposta raw:", response); // <-- log per veure si arriba
+
     const data = await response.json();
+    console.log("Resposta JSON:", data); // <-- log de la resposta final
 
     chatBox.innerHTML += "<p><strong>ARCA:</strong> " + data.reply + "</p>";
     chatBox.scrollTop = chatBox.scrollHeight;
 
   } catch (error) {
+    console.error("Error fetch:", error); // <-- log error
     chatBox.innerHTML += "<p style='color:red;'>Error connectant amb ARCA.</p>";
   }
 }
