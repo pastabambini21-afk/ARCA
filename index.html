@@ -909,11 +909,11 @@ async function sendMessage() {
   chatBox.scrollTop = chatBox.scrollHeight;
 
   try {
-    const response = await fetch("/api/arca/chat", { 
-       method: "POST",
-       headers: { "Content-Type": "application/json" },
-       body: JSON.stringify({ message })
-    });
+    const res = await fetch("https://arca-delta.vercel.app/api/arca", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ message: msg })
+});
 
     console.log("Resposta raw:", response); // <-- log per veure si arriba
 
