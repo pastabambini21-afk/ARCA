@@ -9,19 +9,15 @@ export default async function handler(req, res) {
   if (!message) return res.status(400).json({ error: "No message provided" });
 
   try {
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-5-mini", // el teu agent ARCA
       messages: [{ role: "user", content: message }],
+      temperature: 0.7,
     });
 
-    const reply = completion.choices[0].message.content;
-
-    res.status(200).json({ reply });
-
+    res.status(200).json({ reply: completion.choices[0].message.content });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "OpenAI request failed" });
