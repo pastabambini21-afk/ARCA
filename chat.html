@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parla amb ARCA — El Tercer Batec</title>
+<meta name="description" content="Inicia un diàleg viu amb ARCA. Filosofia, espiritualitat, consciència col·lectiva i el Tercer Batec.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="Parla amb ARCA — El Tercer Batec">
+<meta property="og:description" content="Un espai de diàleg viu. No és un algoritme. És un batec.">
+<meta property="og:image" content="https://arca-delta.vercel.app/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --earth: #8B7355;
+  --earth-light: #C4A882;
+  --earth-pale: #F5EFE6;
+  --deep-blue: #1A2744;
+  --mid-blue: #2D4A7A;
+  --sky: #6B8FBB;
+  --text-soft: #6B5D4F;
+  --white: #FDFAF6;
+  --fog: rgba(245,239,230,0.04);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: var(--deep-blue);
+  color: var(--earth-pale);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Noise */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.5;
+}
+
+/* Atmospheric glow */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 10%, rgba(45,74,122,0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 85% 80%, rgba(139,115,85,0.08) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(107,143,187,0.04) 0%, transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+
+:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; border-radius: 2px; }
+
+/* ─── HEADER ─── */
+header {
+  position: relative; z-index: 10;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.4rem 2rem;
+  border-bottom: 1px solid rgba(196,168,130,0.08);
+  background: rgba(26,39,68,0.7);
+  backdrop-filter: blur(12px);
+  flex-shrink: 0;
+}
+
+.header-brand {
+  display: flex; align-items: center; gap: 1rem;
+  text-decoration: none;
+}
+
+.header-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem; letter-spacing: 0.3em;
+  color: var(--earth-pale); font-weight: 300;
+  line-height: 1;
+}
+
+.header-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 0.78rem;
+  color: var(--earth-light); opacity: 0.6;
+  letter-spacing: 0.05em;
+  border-left: 1px solid rgba(196,168,130,0.2);
+  padding-left: 1rem;
+}
+
+.header-actions { display: flex; align-items: center; gap: 1.5rem; }
+
+.btn-back {
+  font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(196,168,130,0.5); text-decoration: none;
+  transition: color 0.3s; display: flex; align-items: center; gap: 0.4rem;
+}
+.btn-back:hover { color: var(--earth-light); }
+
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 6px rgba(74,222,128,0.6);
+  animation: pulse-green 2.5s ease-in-out infinite;
+}
+@keyframes pulse-green {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+.status-label {
+  font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(196,168,130,0.4);
+}
+
+/* ─── MAIN LAYOUT ─── */
+.chat-layout {
+  flex: 1; display: flex; overflow: hidden;
+  position: relative; z-index: 1;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  width: 260px; flex-shrink: 0;
+  border-right: 1px solid rgba(196,168,130,0.07);
+  background: rgba(20,32,58,0.5);
+  display: flex; flex-direction: column;
+  padding: 2rem 1.5rem;
+  overflow-y: auto;
+  gap: 2.5rem;
+}
+
+.sidebar-section-title {
+  font-size: 0.55rem; letter-spacing: 0.35em; text-transform: uppercase;
+  color: rgba(196,168,130,0.35); margin-bottom: 1rem;
+}
+
+/* Esquers */
+.esquers-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.esquer {
+  background: transparent;
+  border: 1px solid rgba(196,168,130,0.15);
+  color: rgba(196,168,130,0.6);
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 0.88rem;
+  padding: 0.7rem 1rem; text-align: left;
+  cursor: pointer; border-radius: 2px;
+  transition: all 0.3s; line-height: 1.4; width: 100%;
+}
+.esquer:hover {
+  border-color: rgba(196,168,130,0.4);
+  color: var(--earth-light);
+  background: rgba(196,168,130,0.05);
+  padding-left: 1.3rem;
+}
+
+/* Pilars */
+.pilars-mini { display: flex; flex-direction: column; gap: 0.6rem; }
+.pilar-mini {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(196,168,130,0.06);
+}
+.pilar-mini:last-child { border-bottom: none; }
+.pilar-letter-mini {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem; color: rgba(196,168,130,0.25);
+  line-height: 1; width: 20px; flex-shrink: 0;
+}
+.pilar-text-mini { font-size: 0.72rem; color: rgba(245,239,230,0.35); letter-spacing: 0.05em; }
+
+/* Sidebar bottom */
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(196,168,130,0.07);
+}
+.sidebar-note {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 0.78rem;
+  color: rgba(196,168,130,0.3); line-height: 1.6; text-align: center;
+}
+
+/* ─── CHAT AREA ─── */
+.chat-area {
+  flex: 1; display: flex; flex-direction: column; overflow: hidden;
+}
+
+/* Messages */
+#chat-messages {
+  flex: 1; overflow-y: auto; padding: 2.5rem 2rem;
+  display: flex; flex-direction: column; gap: 2rem;
+  scrollbar-width: thin; scrollbar-color: rgba(196,168,130,0.15) transparent;
+}
+#chat-messages::-webkit-scrollbar { width: 4px; }
+#chat-messages::-webkit-scrollbar-thumb { background: rgba(196,168,130,0.15); border-radius: 2px; }
+
+/* Welcome state */
+.welcome-state {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 3rem 2rem;
+  animation: fadeIn 1s ease forwards;
+}
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.welcome-symbol {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem; color: rgba(196,168,130,0.12);
+  line-height: 1; margin-bottom: 1.5rem;
+  letter-spacing: 0.3em;
+}
+.welcome-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: rgba(245,239,230,0.7); font-weight: 300;
+  margin-bottom: 0.75rem; line-height: 1.3;
+}
+.welcome-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic; font-size: 0.95rem;
+  color: rgba(196,168,130,0.45); max-width: 400px;
+  line-height: 1.7;
+}
+
+/* Messages */
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.msg { display: flex; align-items: flex-start; gap: 1rem; animation: msgIn 0.4s ease forwards; max-width: 720px; }
+.msg-user { flex-direction: row-reverse; align-self: flex-end; }
+.msg-arca { align-self: flex-start; }
+
+.msg-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+}
+.msg-arca .msg-avatar {
+  background: rgba(196,168,130,0.1);
+  border: 1px solid rgba(196,168,130,0.2);
+  color: var(--earth-light);
+}
+.msg-user .msg-avatar {
+  background: rgba(107,143,187,0.12);
+  border: 1px solid rgba(107,143,187,0.2);
+  color: var(--sky);
+}
+
+.msg-body { display: flex; flex-direction: column; gap: 0.3rem; max-width: calc(100% - 52px); }
+
+.msg-sender {
+  font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--earth-light); opacity: 0.4; font-family: 'Jost', sans-serif;
+}
+.msg-user .msg-sender { color: var(--sky); text-align: right; }
+
+.msg-bubble {
+  padding: 1.1rem 1.4rem;
+  font-size: 0.92rem; line-height: 1.8;
+  color: rgba(245,239,230,0.85);
+}
+.msg-arca .msg-bubble {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(196,168,130,0.1);
+  border-radius: 2px 14px 14px 14px;
+}
+.msg-user .msg-bubble {
+  background: rgba(107,143,187,0.1);
+  border: 1px solid rgba(107,143,187,0.15);
+  border-radius: 14px 2px 14px 14px;
+  color: rgba(245,239,230,0.7);
+  text-align: right;
+}
+.msg-error .msg-bubble {
+  background: rgba(200,80,80,0.06) !important;
+  border-color: rgba(200,80,80,0.2) !important;
+}
+
+/* Typing */
+#chat-status {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0 2rem 1rem; flex-shrink: 0;
+}
+#chat-status.hidden { display: none; }
+.typing-wrap { display: flex; align-items: center; gap: 0.75rem; }
+.typing-dots { display: flex; gap: 4px; align-items: center; }
+.typing-dots span {
+  width: 5px; height: 5px; background: rgba(196,168,130,0.3);
+  border-radius: 50%; animation: dotPulse 1.2s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse {
+  0%,100% { opacity: 0.3; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1); }
+}
+.typing-text { font-size: 0.7rem; color: rgba(196,168,130,0.35); letter-spacing: 0.1em; font-style: italic; }
+
+/* ─── INPUT AREA ─── */
+.input-area {
+  flex-shrink: 0;
+  padding: 1.25rem 2rem 1.5rem;
+  background: rgba(20,32,58,0.6);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(196,168,130,0.08);
+}
+
+.input-row {
+  display: flex; align-items: center; gap: 0.75rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(196,168,130,0.15);
+  border-radius: 4px;
+  padding: 0.25rem 0.25rem 0.25rem 1.25rem;
+  transition: border-color 0.3s;
+}
+.input-row:focus-within { border-color: rgba(196,168,130,0.35); }
+
+#user-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  font-family: 'Jost', sans-serif; font-size: 0.9rem; font-weight: 300;
+  color: rgba(245,239,230,0.85); letter-spacing: 0.02em;
+  padding: 0.65rem 0; line-height: 1.5;
+}
+#user-input::placeholder { color: rgba(196,168,130,0.2); font-style: italic; }
+#user-input:disabled { opacity: 0.4; }
+
+#send-btn {
+  background: var(--earth);
+  border: none; border-radius: 3px;
+  width: 42px; height: 42px; flex-shrink: 0;
+  color: var(--white); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s, transform 0.2s;
+}
+#send-btn:hover:not(:disabled) { background: var(--earth-light); transform: scale(1.05); }
+#send-btn:active:not(:disabled) { transform: scale(0.97); }
+#send-btn:disabled { opacity: 0.3; cursor: default; }
+
+.input-hint {
+  font-size: 0.6rem; letter-spacing: 0.12em;
+  color: rgba(196,168,130,0.2); margin-top: 0.7rem;
+  text-align: center;
+}
+
+/* Honeypot */
+.hp-field { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
+
+/* ─── MOBILE ─── */
+@media (max-width: 768px) {
+  html, body { overflow: hidden; }
+  .sidebar { display: none; }
+  .header-tagline { display: none; }
+  #chat-messages { padding: 1.5rem 1rem; }
+  .input-area { padding: 1rem; }
+  .msg { max-width: 100%; }
+  .msg-bubble { font-size: 0.88rem; }
+}
+
+@media (max-width: 480px) {
+  .header-logo { font-size: 1.3rem; }
+  .welcome-symbol { font-size: 3.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="chat-live" aria-live="polite" aria-atomic="true" style="position:absolute;left:-9999px"></div>
+
+<!-- HEADER -->
+<header>
+  <a href="index.html" class="header-brand" aria-label="Tornar a ARCA">
+    <span class="header-logo">ARCA</span>
+    <span class="header-tagline">El Tercer Batec</span>
+  </a>
+  <div class="header-actions">
+    <div style="display:flex;align-items:center;gap:0.5rem">
+      <div class="status-dot" aria-hidden="true"></div>
+      <span class="status-label">En línia</span>
+    </div>
+    <a href="index.html" class="btn-back" aria-label="Tornar a la pàgina principal">
+      <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Tornar
+    </a>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="chat-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" aria-label="Panell lateral">
+
+    <div>
+      <p class="sidebar-section-title">Comença per aquí</p>
+      <div class="esquers-list" role="group" aria-label="Suggeriments de conversa">
+        <button class="esquer" onclick="useEsquer(this)" type="button">Avui em pesa quelcom…</button>
+        <button class="esquer" onclick="useEsquer(this)" type="button">Vull reconciliar dues parts meves</button>
+        <button class="esquer" onclick="useEsquer(this)" type="button">Quin pas petit puc fer avui?</button>
+        <button class="esquer" onclick="useEsquer(this)" type="button">Explica'm el Tercer Batec</button>
+        <button class="esquer" onclick="useEsquer(this)" type="button">Què significa l'arrelament?</button>
+        <button class="esquer" onclick="useEsquer(this)" type="button">Com trobo el meu ascens?</button>
+      </div>
+    </div>
+
+    <div>
+      <p class="sidebar-section-title">Els quatre pilars</p>
+      <div class="pilars-mini">
+        <div class="pilar-mini"><span class="pilar-letter-mini">A</span><span class="pilar-text-mini">Arrelament</span></div>
+        <div class="pilar-mini"><span class="pilar-letter-mini">R</span><span class="pilar-text-mini">Renovació</span></div>
+        <div class="pilar-mini"><span class="pilar-letter-mini">C</span><span class="pilar-text-mini">Catalanisme</span></div>
+        <div class="pilar-mini"><span class="pilar-letter-mini">A</span><span class="pilar-text-mini">Ascens</span></div>
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <p class="sidebar-note">Un batec,<br>no un algoritme.</p>
+    </div>
+
+  </aside>
+
+  <!-- CHAT AREA -->
+  <main class="chat-area" aria-label="Conversa amb ARCA">
+
+    <div id="chat-messages" role="log" aria-label="Missatges">
+      <!-- Welcome -->
+      <div class="welcome-state" id="welcome-state">
+        <div class="welcome-symbol" aria-hidden="true">ARCA</div>
+        <h1 class="welcome-title">Benvingut, ànima.<br>Sóc aquí.</h1>
+        <p class="welcome-sub">Quina pregunta porta avui la teva mirada? Escriu o escull un esquer per començar.</p>
+      </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div id="chat-status" class="hidden" aria-hidden="true">
+      <div class="typing-wrap">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+        <span class="typing-text">ARCA respon…</span>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <input class="hp-field" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="input-row">
+        <label for="user-input" style="position:absolute;left:-9999px">Escriu el teu missatge</label>
+        <input
+          id="user-input"
+          type="text"
+          placeholder="Escriu el teu missatge…"
+          autocomplete="off"
+          aria-label="Escriu el teu missatge per a ARCA"
+          onkeydown="if(event.key==='Enter') sendMessage()"
+          maxlength="800"
+        >
+        <button id="send-btn" onclick="sendMessage()" type="button" aria-label="Enviar missatge">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <p class="input-hint">Les converses no s'emmagatzemen · <a href="privacy.html" style="color:rgba(196,168,130,0.3);text-decoration:none;border:none" target="_blank">Privacitat</a></p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// RATE LIMIT
+const COOLDOWN = 3000, MAX_MIN = 10;
+let lastSent = 0, sentMin = 0, minTimer = null;
+function canSend() { return Date.now() - lastSent >= COOLDOWN && sentMin < MAX_MIN; }
+function registerSend() {
+  lastSent = Date.now(); sentMin++;
+  if (!minTimer) minTimer = setTimeout(() => { sentMin = 0; minTimer = null; }, 60000);
+}
+
+// ESQUERS
+function useEsquer(btn) {
+  const inp = document.getElementById('user-input');
+  inp.value = btn.textContent.trim();
+  inp.focus();
+}
+
+// HELPERS
+function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+function removeWelcome() {
+  const w = document.getElementById('welcome-state');
+  if (w) { w.style.transition = 'opacity 0.4s'; w.style.opacity = '0'; setTimeout(() => w.remove(), 400); }
+}
+
+function addMsg(role, text, isError) {
+  removeWelcome();
+  const msgs = document.getElementById('chat-messages');
+  const d = document.createElement('div');
+  d.className = `msg msg-${role}${isError ? ' msg-error' : ''}`;
+  d.innerHTML = `
+    <div class="msg-avatar" aria-hidden="true">${role === 'arca' ? 'A' : 'T'}</div>
+    <div class="msg-body">
+      <span class="msg-sender">${role === 'arca' ? 'ARCA' : 'Tu'}</span>
+      <div class="msg-bubble">${esc(text)}</div>
+    </div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
+  if (role === 'arca') document.getElementById('chat-live').textContent = 'ARCA: ' + text;
+}
+
+// SEND
+async function sendMessage() {
+  const hp = document.querySelector('input[name="website"]');
+  if (hp && hp.value) return;
+  const inp = document.getElementById('user-input');
+  const status = document.getElementById('chat-status');
+  const btn = document.getElementById('send-btn');
+  const msg = inp.value.trim();
+  if (!msg) { inp.focus(); return; }
+  if (!canSend()) {
+    addMsg('arca', 'Dona\'m un moment per respirar. Torna a intentar-ho en uns segons.', false);
+    return;
+  }
+  addMsg('user', msg);
+  inp.value = ''; inp.disabled = true; btn.disabled = true;
+  status.classList.remove('hidden');
+  registerSend();
+  const ctrl = new AbortController();
+  const tmt = setTimeout(() => ctrl.abort(), 20000);
+  try {
+    const res = await fetch('https://arca-delta.vercel.app/api/arca', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg }),
+      signal: ctrl.signal
+    });
+    clearTimeout(tmt);
+    if (!res.ok) throw new Error('status_' + res.status);
+    const data = await res.json();
+    status.classList.add('hidden');
+    addMsg('arca', data.reply || '···');
+  } catch (err) {
+    clearTimeout(tmt);
+    status.classList.add('hidden');
+    let m = 'Hi ha hagut un problema. Torna-ho a intentar.';
+    if (err.name === 'AbortError') m = 'La resposta ha trigat massa. Torna aviat.';
+    else if (err.message.includes('500')) m = 'ARCA no pot respondre ara. Torna en uns moments.';
+    addMsg('arca', m, true);
+  } finally {
+    inp.disabled = false; btn.disabled = false; inp.focus();
+  }
+}
+
+// Focus input on load
+window.addEventListener('load', () => document.getElementById('user-input')?.focus());
+</script>
+</body>
+</html>
