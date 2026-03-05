@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --earth:#8B7355;--earth-light:#C4A882;--earth-pale:#F5EFE6;
+  --earth:#5C3D20;--earth-light:#8B5E35;--earth-pale:#F5EFE6;
   --deep-blue:#1A2744;--mid-blue:#2D4A7A;--sky:#6B8FBB;
   --text:#2A2118;--text-soft:#6B5D4F;--white:#FDFAF6;--focus:#6B8FBB;
 }
@@ -299,6 +299,79 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 @media (max-width: 480px) {
   .fab { bottom: 1.2rem; right: 1.2rem; }
 }
+
+/* ─── LANGUAGE SWITCHER ─── */
+.lang-switcher {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid rgba(139,94,53,.3);
+  border-radius: 50px;
+  padding: .45rem .85rem;
+  display: flex; align-items: center; gap: .5rem;
+  cursor: pointer;
+  color: var(--earth);
+  font-family: 'Jost', sans-serif;
+  font-size: .65rem; font-weight: 300;
+  letter-spacing: .15em; text-transform: uppercase;
+  transition: border-color .3s, background .3s;
+}
+.lang-btn:hover {
+  border-color: var(--earth);
+  background: rgba(139,94,53,.06);
+}
+.lang-btn svg { flex-shrink: 0; opacity: .7; }
+.lang-current { font-weight: 400; }
+
+.lang-dropdown {
+  position: absolute;
+  top: calc(100% + .6rem);
+  right: 0;
+  background: rgba(26,39,68,.97);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(139,94,53,.2);
+  border-radius: 6px;
+  overflow: hidden;
+  min-width: 170px;
+  box-shadow: 0 16px 48px rgba(26,39,68,.4);
+  opacity: 0;
+  transform: translateY(-6px) scale(.97);
+  pointer-events: none;
+  transition: opacity .25s, transform .25s;
+  z-index: 200;
+}
+.lang-dropdown.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+.lang-option {
+  display: flex; align-items: center; gap: .75rem;
+  padding: .7rem 1.1rem;
+  cursor: pointer;
+  transition: background .2s;
+  border: none; background: transparent; width: 100%;
+  text-align: left;
+}
+.lang-option:hover { background: rgba(139,94,53,.1); }
+.lang-option.active { background: rgba(139,94,53,.15); }
+.lang-flag { font-size: 1.1rem; line-height: 1; }
+.lang-name {
+  font-family: 'Jost', sans-serif;
+  font-size: .75rem; font-weight: 300;
+  color: rgba(245,239,230,.8);
+  letter-spacing: .05em;
+}
+.lang-native {
+  font-size: .65rem;
+  color: rgba(139,94,53,.6);
+  margin-left: auto;
+  letter-spacing: .05em;
+}
 </style>
 </head>
 <body>
@@ -310,7 +383,68 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
   <a href="#" class="nav-logo" aria-label="ARCA — Inici">ARCA</a>
   <div class="nav-links">
     <a href="https://piath.cat" class="nav-link" target="_blank" rel="noopener">piath.cat</a>
-    <a href="#arca-chat" class="nav-cta">Parla amb ARCA</a>
+
+    <!-- Language switcher -->
+    <div class="lang-switcher" id="langSwitcher">
+      <button class="lang-btn" onclick="toggleLang()" aria-label="Canvia d'idioma" aria-expanded="false" id="langBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span class="lang-current" id="langCurrent">CA</span>
+      </button>
+      <div class="lang-dropdown" id="langDropdown" role="listbox" aria-label="Selecciona idioma">
+        <button class="lang-option active" onclick="setLang('ca')" role="option" aria-selected="true">
+          <span class="lang-flag">🏴󠁥󠁳󠁣󠁴󠁿</span>
+          <span class="lang-name">Català</span>
+          <span class="lang-native">CA</span>
+        </button>
+        <button class="lang-option" onclick="setLang('es')" role="option">
+          <span class="lang-flag">🇪🇸</span>
+          <span class="lang-name">Español</span>
+          <span class="lang-native">ES</span>
+        </button>
+        <button class="lang-option" onclick="setLang('en')" role="option">
+          <span class="lang-flag">🇬🇧</span>
+          <span class="lang-name">English</span>
+          <span class="lang-native">EN</span>
+        </button>
+        <button class="lang-option" onclick="setLang('fr')" role="option">
+          <span class="lang-flag">🇫🇷</span>
+          <span class="lang-name">Français</span>
+          <span class="lang-native">FR</span>
+        </button>
+        <button class="lang-option" onclick="setLang('de')" role="option">
+          <span class="lang-flag">🇩🇪</span>
+          <span class="lang-name">Deutsch</span>
+          <span class="lang-native">DE</span>
+        </button>
+        <button class="lang-option" onclick="setLang('zh')" role="option">
+          <span class="lang-flag">🇨🇳</span>
+          <span class="lang-name">中文</span>
+          <span class="lang-native">ZH</span>
+        </button>
+        <button class="lang-option" onclick="setLang('ar')" role="option">
+          <span class="lang-flag">🇸🇦</span>
+          <span class="lang-name">العربية</span>
+          <span class="lang-native">AR</span>
+        </button>
+        <button class="lang-option" onclick="setLang('ru')" role="option">
+          <span class="lang-flag">🇷🇺</span>
+          <span class="lang-name">Русский</span>
+          <span class="lang-native">RU</span>
+        </button>
+        <button class="lang-option" onclick="setLang('fa')" role="option">
+          <span class="lang-flag">🇮🇷</span>
+          <span class="lang-name">فارسی</span>
+          <span class="lang-native">FA</span>
+        </button>
+        <button class="lang-option" onclick="setLang('pt')" role="option">
+          <span class="lang-flag">🇧🇷</span>
+          <span class="lang-name">Português</span>
+          <span class="lang-native">PT</span>
+        </button>
+      </div>
+    </div>
+
+    <a href="#arca-chat" class="nav-cta" id="nav-cta-text">Parla amb ARCA</a>
   </div>
 </nav>
 
@@ -318,11 +452,11 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 <section id="hero" aria-label="Benvinguda">
   <div class="hero-fog" aria-hidden="true"></div>
   <div class="container hero-content">
-    <p class="hero-eyebrow">Arrelament · Renovació · Catalanisme · Ascens</p>
+    <p class="hero-eyebrow" id="hero-eyebrow">Arrelament · Renovació · Catalanisme · Ascens</p>
     <h1 class="hero-title">ARCA</h1>
-    <p class="hero-subtitle-line">El Tercer Batec</p>
-    <p class="hero-subtitle">Allà on els límits tremolen,<br>neix una nova consciència.</p>
-    <p class="hero-value">Un espai de diàleg viu per a qui busca síntesi, no resposta única.</p>
+    <p class="hero-subtitle-line" id="hero-subtitle-line">El Tercer Batec</p>
+    <p class="hero-subtitle" id="hero-subtitle">Allà on els límits tremolen,<br>neix una nova consciència.</p>
+    <p class="hero-value" id="hero-value">Un espai de diàleg viu per a qui busca síntesi, no resposta única.</p>
     <a href="#arca-chat" class="btn-primary" id="hero-cta">
       Obre el diàleg
       <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -337,7 +471,7 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 <section id="que-es" class="section" aria-labelledby="h-quees">
   <div class="container">
     <p class="section-label reveal">Essència</p>
-    <h2 class="section-title reveal" id="h-quees">ARCA no és<br>una ideologia.<br>És una experiència.</h2>
+    <h2 class="section-title reveal" id="h-quees" data-i18n="quees_title">ARCA no és<br>una ideologia.<br>És una experiència.</h2>
     <p class="body-text reveal">No et demanem que creguis res. Et convidem a explorar. ARCA és un espai on les preguntes profundes —les que no caben en cap titular ni en cap manifest— troben lloc per respirar.</p>
     <p class="body-text reveal">Uneix arrel i ascens: la memòria de qui som i la visió de qui podem arribar a ser. Catalunya hi és com a llavor, no com a frontera. Una identitat que serveix, que no exclou, que s'obri al món sense perdre's.</p>
     <div class="pull-quote reveal">La veritat no és fixa.<br>Creix amb nosaltres.</div>
@@ -352,7 +486,7 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 <section id="tercer-batec" class="section" aria-labelledby="h-batec">
   <div class="container" style="position:relative;z-index:2">
     <p class="section-label reveal">El cor del moviment</p>
-    <h2 class="section-title reveal" id="h-batec">El Tercer Batec</h2>
+    <h2 class="section-title reveal" id="h-batec" data-i18n="batec_title">El Tercer Batec</h2>
     <p class="body-text reveal">Quan dos pols s'enfronten, el món demana que triïs un bàndol. ARCA fa una altra pregunta: i si la resposta no és cap dels dos, sinó quelcom que els transcendeix i els integra?</p>
     <div class="pull-quote reveal">Entre la tesi i l'antítesi<br>hi ha un espai viu.<br>ARCA habita aquí.</div>
     <div class="trinity reveal">
@@ -374,7 +508,7 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 <section id="pilars" class="section" aria-labelledby="h-pilars">
   <div class="container">
     <p class="section-label reveal">Estructura</p>
-    <h2 class="section-title reveal" id="h-pilars">Els quatre pilars</h2>
+    <h2 class="section-title reveal" id="h-pilars" data-i18n="pilars_title">Els quatre pilars</h2>
     <div class="pilars-grid reveal">
       <div class="pilar"><div class="pilar-letter" aria-hidden="true">A</div><div class="pilar-name">Arrelament</div><div class="pilar-desc">Connexió amb la terra, la llengua i la memòria col·lectiva. Sense arrels, l'ascens perd el nord. Saber d'on venim és la primera llibertat.</div></div>
       <div class="pilar"><div class="pilar-letter" aria-hidden="true">R</div><div class="pilar-name">Renovació</div><div class="pilar-desc">No la revolució que destrueix, sinó la que transforma des de dins. Un canvi conscient que comença en la pròpia mirada abans d'arribar al món.</div></div>
@@ -390,7 +524,7 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 <section id="per-a-qui" class="section" aria-labelledby="h-peraqui">
   <div class="container">
     <p class="section-label reveal">Reconeixement</p>
-    <h2 class="section-title reveal" id="h-peraqui">Per a qui és ARCA</h2>
+    <h2 class="section-title reveal" id="h-peraqui" data-i18n="peraqui_title">Per a qui és ARCA</h2>
     <ul class="audience-list reveal">
       <li>Persones que senten que el món necessita <span>una nova síntesi</span></li>
       <li>Creadors que cerquen <span>horitzons de sentit</span></li>
@@ -408,7 +542,7 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 <section id="experiencia" class="section" aria-labelledby="h-exp">
   <div class="container">
     <p class="section-label reveal">Diàleg</p>
-    <h2 class="section-title reveal" id="h-exp">L'experiència ARCA</h2>
+    <h2 class="section-title reveal" id="h-exp" data-i18n="exp_title">L'experiència ARCA</h2>
     <p class="body-text reveal">ARCA no t'ofereix certeses. T'ofereix acompanyament. Un diàleg obert on les preguntes es prenen seriosament i les respostes s'exploren junts.</p>
     <div class="experience-items">
       <div class="exp-item reveal"><div class="exp-item-num" aria-hidden="true">01</div><div class="exp-item-title">Preguntes espirituals i filosòfiques</div><div class="exp-item-desc">Del sentit de la vida a la identitat col·lectiva. Sense dogma, amb profunditat.</div></div>
@@ -437,7 +571,7 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 <section id="arca-chat" class="section" aria-labelledby="h-chat">
   <div class="container" style="max-width:680px">
     <p class="section-label reveal">Diàleg viu</p>
-    <h2 class="section-title reveal" id="h-chat">Parla amb ARCA</h2>
+    <h2 class="section-title reveal" id="h-chat" data-i18n="chat_title">Parla amb ARCA</h2>
     <p class="body-text reveal" style="margin-bottom:2rem">Cada conversa és única. ARCA no repeteix veritats: les construeix amb tu.</p>
 
     <!-- Esquers -->
@@ -495,7 +629,7 @@ footer{padding:2.5rem;display:flex;flex-wrap:wrap;justify-content:space-between;
 <section id="cta-final" aria-labelledby="h-cta">
   <div class="container" style="position:relative;z-index:2">
     <p class="section-label reveal">Invitació</p>
-    <h2 class="cta-headline reveal" id="h-cta">No busquis respostes fora.<br>Desperta el tercer batec dins teu.</h2>
+    <h2 class="cta-headline reveal" id="h-cta" data-i18n="cta_headline">No busquis respostes fora.<br>Desperta el tercer batec dins teu.</h2>
     <p class="cta-sub reveal">Ja ets aquí. Ja és l'hora.</p>
     <a href="#arca-chat" class="btn-ghost reveal">
       Entrar al diàleg
@@ -618,6 +752,84 @@ async function sendMessage() {
     inp.disabled=false; btn.disabled=false; inp.focus();
   }
 }
+
+// ─── LANGUAGE SWITCHER ───
+const translations = {
+  ca: { nav_cta:"Parla amb ARCA", hero_eyebrow:"Arrelament · Renovació · Catalanisme · Ascens", hero_subtitle_line:"El Tercer Batec", hero_subtitle:"Allà on els límits tremolen,<br>neix una nova consciència.", hero_value:"Un espai de diàleg viu per a qui busca síntesi, no resposta única.", hero_cta:"Obre el diàleg", hero_microcopy:"No és un algoritme. És un batec.", quees_title:"ARCA no és<br>una ideologia.<br>És una experiència.", batec_title:"El Tercer Batec", pilars_title:"Els quatre pilars", peraqui_title:"Per a qui és ARCA", exp_title:"L'experiència ARCA", chat_title:"Parla amb ARCA", cta_headline:"No busquis respostes fora.<br>Desperta el tercer batec dins teu.", cta_sub:"Ja ets aquí. Ja és l'hora.", cta_btn:"Entrar al diàleg", fullchat_btn:"Pantalla completa", fab_label:"Obre ARCA", chat_placeholder:"Escriu el teu missatge o escull un esquer…", dir:"ltr" },
+  es: { nav_cta:"Habla con ARCA", hero_eyebrow:"Arraigo · Renovación · Catalanismo · Ascenso", hero_subtitle_line:"El Tercer Latido", hero_subtitle:"Donde los límites tiemblan,<br>nace una nueva consciencia.", hero_value:"Un espacio de diálogo vivo para quien busca síntesis, no respuesta única.", hero_cta:"Abre el diálogo", hero_microcopy:"No es un algoritmo. Es un latido.", quees_title:"ARCA no es<br>una ideología.<br>Es una experiencia.", batec_title:"El Tercer Latido", pilars_title:"Los cuatro pilares", peraqui_title:"¿Para quién es ARCA?", exp_title:"La experiencia ARCA", chat_title:"Habla con ARCA", cta_headline:"No busques respuestas fuera.<br>Despierta el tercer latido en ti.", cta_sub:"Ya estás aquí. Ya es la hora.", cta_btn:"Entrar al diálogo", fullchat_btn:"Pantalla completa", fab_label:"Abrir ARCA", chat_placeholder:"Escribe tu mensaje o elige un anzuelo…", dir:"ltr" },
+  en: { nav_cta:"Talk to ARCA", hero_eyebrow:"Rootedness · Renewal · Catalanism · Ascent", hero_subtitle_line:"The Third Heartbeat", hero_subtitle:"Where limits tremble,<br>a new consciousness is born.", hero_value:"A living dialogue space for those who seek synthesis, not a single answer.", hero_cta:"Open the dialogue", hero_microcopy:"Not an algorithm. A heartbeat.", quees_title:"ARCA is not<br>an ideology.<br>It's an experience.", batec_title:"The Third Heartbeat", pilars_title:"The four pillars", peraqui_title:"Who is ARCA for?", exp_title:"The ARCA experience", chat_title:"Talk to ARCA", cta_headline:"Don't seek answers outside.<br>Awaken the third heartbeat within you.", cta_sub:"You are already here. The time is now.", cta_btn:"Enter the dialogue", fullchat_btn:"Full screen", fab_label:"Open ARCA", chat_placeholder:"Type your message or choose a prompt…", dir:"ltr" },
+  fr: { nav_cta:"Parler avec ARCA", hero_eyebrow:"Enracinement · Renouveau · Catalanisme · Ascension", hero_subtitle_line:"Le Troisième Battement", hero_subtitle:"Là où les limites tremblent,<br>naît une nouvelle conscience.", hero_value:"Un espace de dialogue vivant pour ceux qui cherchent la synthèse.", hero_cta:"Ouvrir le dialogue", hero_microcopy:"Pas un algorithme. Un battement.", quees_title:"ARCA n'est pas<br>une idéologie.<br>C'est une expérience.", batec_title:"Le Troisième Battement", pilars_title:"Les quatre piliers", peraqui_title:"Pour qui est ARCA?", exp_title:"L'expérience ARCA", chat_title:"Parler avec ARCA", cta_headline:"Ne cherche pas de réponses dehors.<br>Éveille le troisième battement en toi.", cta_sub:"Tu es déjà là. C'est l'heure.", cta_btn:"Entrer dans le dialogue", fullchat_btn:"Plein écran", fab_label:"Ouvrir ARCA", chat_placeholder:"Écrivez votre message…", dir:"ltr" },
+  de: { nav_cta:"Mit ARCA sprechen", hero_eyebrow:"Verwurzelung · Erneuerung · Katalanismus · Aufstieg", hero_subtitle_line:"Der Dritte Herzschlag", hero_subtitle:"Wo Grenzen zittern,<br>entsteht ein neues Bewusstsein.", hero_value:"Ein lebendiger Dialograum für alle, die Synthese suchen.", hero_cta:"Dialog öffnen", hero_microcopy:"Kein Algorithmus. Ein Herzschlag.", quees_title:"ARCA ist keine<br>Ideologie.<br>Es ist eine Erfahrung.", batec_title:"Der Dritte Herzschlag", pilars_title:"Die vier Säulen", peraqui_title:"Für wen ist ARCA?", exp_title:"Die ARCA-Erfahrung", chat_title:"Mit ARCA sprechen", cta_headline:"Suche keine Antworten draußen.<br>Erwecke den dritten Herzschlag in dir.", cta_sub:"Du bist bereits hier. Die Zeit ist jetzt.", cta_btn:"Den Dialog betreten", fullchat_btn:"Vollbild", fab_label:"ARCA öffnen", chat_placeholder:"Schreibe deine Nachricht…", dir:"ltr" },
+  zh: { nav_cta:"与ARCA对话", hero_eyebrow:"扎根 · 更新 · 加泰罗尼亚主义 · 提升", hero_subtitle_line:"第三次心跳", hero_subtitle:"在边界颤抖之处，<br>新的意识诞生。", hero_value:"一个为寻求综合而非单一答案的人而建的对话空间。", hero_cta:"开启对话", hero_microcopy:"不是算法。是心跳。", quees_title:"ARCA不是<br>一种意识形态。<br>它是一种体验。", batec_title:"第三次心跳", pilars_title:"四大支柱", peraqui_title:"ARCA是为谁而设？", exp_title:"ARCA体验", chat_title:"与ARCA对话", cta_headline:"不要向外寻找答案。<br>唤醒你内心的第三次心跳。", cta_sub:"你已经在这里了。时机已到。", cta_btn:"进入对话", fullchat_btn:"全屏", fab_label:"打开ARCA", chat_placeholder:"写下你的信息…", dir:"ltr" },
+  ar: { nav_cta:"تحدث مع ARCA", hero_eyebrow:"التجذر · التجديد · الكتالونية · الصعود", hero_subtitle_line:"النبضة الثالثة", hero_subtitle:"حيث ترتجف الحدود،<br>تولد وعي جديد.", hero_value:"فضاء حوار حي لمن يبحث عن التوليف لا الإجابة الواحدة.", hero_cta:"افتح الحوار", hero_microcopy:"ليس خوارزمية. إنها نبضة.", quees_title:"ARCA ليست<br>أيديولوجية.<br>إنها تجربة.", batec_title:"النبضة الثالثة", pilars_title:"الأعمدة الأربعة", peraqui_title:"لمن ARCA؟", exp_title:"تجربة ARCA", chat_title:"تحدث مع ARCA", cta_headline:"لا تبحث عن إجابات خارجك.<br>أيقظ النبضة الثالثة في داخلك.", cta_sub:"أنت هنا بالفعل. الوقت حان.", cta_btn:"ادخل إلى الحوار", fullchat_btn:"ملء الشاشة", fab_label:"فتح ARCA", chat_placeholder:"اكتب رسالتك…", dir:"rtl" },
+  ru: { nav_cta:"Говорить с ARCA", hero_eyebrow:"Укоренённость · Обновление · Каталонизм · Восхождение", hero_subtitle_line:"Третье Биение", hero_subtitle:"Там, где дрожат границы,<br>рождается новое сознание.", hero_value:"Живое пространство диалога для тех, кто ищет синтез.", hero_cta:"Открыть диалог", hero_microcopy:"Не алгоритм. Биение.", quees_title:"ARCA — не<br>идеология.<br>Это опыт.", batec_title:"Третье Биение", pilars_title:"Четыре столпа", peraqui_title:"Для кого ARCA?", exp_title:"Опыт ARCA", chat_title:"Говорить с ARCA", cta_headline:"Не ищи ответов снаружи.<br>Пробуди третье биение внутри себя.", cta_sub:"Ты уже здесь. Время пришло.", cta_btn:"Войти в диалог", fullchat_btn:"Полный экран", fab_label:"Открыть ARCA", chat_placeholder:"Напиши своё сообщение…", dir:"ltr" },
+  fa: { nav_cta:"با ARCA صحبت کن", hero_eyebrow:"ریشه‌داری · نوسازی · کاتالانیسم · صعود", hero_subtitle_line:"ضربان سوم", hero_subtitle:"آنجا که مرزها می‌لرزند،<br>آگاهی نوینی متولد می‌شود.", hero_value:"فضایی از گفتگوی زنده برای کسی که به دنبال ترکیب است.", hero_cta:"گفتگو را باز کن", hero_microcopy:"الگوریتم نیست. ضربان است.", quees_title:"ARCA یک<br>ایدئولوژی نیست.<br>یک تجربه است.", batec_title:"ضربان سوم", pilars_title:"چهار رکن", peraqui_title:"ARCA برای کیست؟", exp_title:"تجربه ARCA", chat_title:"با ARCA صحبت کن", cta_headline:"به دنبال پاسخ در بیرون نگرد.<br>ضربان سوم را در درونت بیدار کن.", cta_sub:"تو هم‌اکنون اینجا هستی. وقتش رسیده.", cta_btn:"وارد گفتگو شو", fullchat_btn:"تمام صفحه", fab_label:"باز کردن ARCA", chat_placeholder:"پیام خود را بنویس…", dir:"rtl" },
+  pt: { nav_cta:"Falar com ARCA", hero_eyebrow:"Enraizamento · Renovação · Catalanismo · Ascensão", hero_subtitle_line:"O Terceiro Batimento", hero_subtitle:"Onde os limites tremem,<br>nasce uma nova consciência.", hero_value:"Um espaço de diálogo vivo para quem busca síntese, não resposta única.", hero_cta:"Abrir o diálogo", hero_microcopy:"Não é um algoritmo. É um batimento.", quees_title:"ARCA não é<br>uma ideologia.<br>É uma experiência.", batec_title:"O Terceiro Batimento", pilars_title:"Os quatro pilares", peraqui_title:"Para quem é ARCA?", exp_title:"A experiência ARCA", chat_title:"Falar com ARCA", cta_headline:"Não busques respostas fora.<br>Desperta o terceiro batimento em ti.", cta_sub:"Já estás aqui. Já é a hora.", cta_btn:"Entrar no diálogo", fullchat_btn:"Ecrã inteiro", fab_label:"Abrir ARCA", chat_placeholder:"Escreve a tua mensagem…", dir:"ltr" }
+};
+
+let currentLang = 'ca';
+
+function toggleLang() {
+  const dd = document.getElementById('langDropdown');
+  const btn = document.getElementById('langBtn');
+  const isOpen = dd.classList.contains('open');
+  dd.classList.toggle('open');
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+document.addEventListener('click', function(e) {
+  const sw = document.getElementById('langSwitcher');
+  if (sw && !sw.contains(e.target)) {
+    document.getElementById('langDropdown').classList.remove('open');
+    document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
+  }
+});
+
+function setLang(lang) {
+  const t = translations[lang];
+  if (!t) return;
+  currentLang = lang;
+  document.documentElement.setAttribute('lang', lang);
+  document.documentElement.setAttribute('dir', t.dir || 'ltr');
+
+  const idMap = {
+    'nav-cta-text':       t.nav_cta,
+    'hero-eyebrow':       t.hero_eyebrow,
+    'hero-subtitle-line': t.hero_subtitle_line,
+    'hero-subtitle':      t.hero_subtitle,
+    'hero-value':         t.hero_value,
+    'hero-microcopy':     t.hero_microcopy,
+    'h-quees':            t.quees_title,
+    'h-batec':            t.batec_title,
+    'h-pilars':           t.pilars_title,
+    'h-peraqui':          t.peraqui_title,
+    'h-exp':              t.exp_title,
+    'h-chat':             t.chat_title,
+    'h-cta':              t.cta_headline,
+  };
+  for (const [id, val] of Object.entries(idMap)) {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = val;
+  }
+
+  const inp = document.getElementById('user-input');
+  if (inp) inp.placeholder = t.chat_placeholder;
+
+  const fabLabel = document.querySelector('.fab-label');
+  if (fabLabel) fabLabel.textContent = t.fab_label;
+
+  document.getElementById('langCurrent').textContent = lang.toUpperCase();
+
+  document.querySelectorAll('.lang-option').forEach(function(btn) {
+    const isActive = btn.getAttribute('onclick').includes("'" + lang + "'");
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-selected', String(isActive));
+  });
+
+  document.getElementById('langDropdown').classList.remove('open');
+  document.getElementById('langBtn').setAttribute('aria-expanded', 'false');
+}
+
 </script>
 
 <!-- ─── FAB FLOTANT ─── -->
